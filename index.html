@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Tracking CSV Exporter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Time Tracking CSV Exporter</h1>
+        
+        <div class="form-section">
+            <div class="input-group">
+                <label for="emails">Email Addresses:</label>
+                <div class="email-input-container">
+                    <input type="email" id="email-input" placeholder="Enter email and press Enter">
+                    <div id="email-tags" class="email-tags"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Date Range:</label>
+                <div class="date-range">
+                    <div>
+                        <label for="start-date">Start Date:</label>
+                        <input type="date" id="start-date">
+                    </div>
+                    <div>
+                        <label for="end-date">End Date:</label>
+                        <input type="date" id="end-date">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="date-selector">
+                    <div class="selector-section">
+                        <div class="section-header">
+                            <h3>Year</h3>
+                        </div>
+                        <div class="year-selector">
+                            <button type="button" class="year-nav" data-direction="prev">◀</button>
+                            <span id="selected-year">2024</span>
+                            <button type="button" class="year-nav" data-direction="next">▶</button>
+                        </div>
+                    </div>
+
+                    <div class="selector-section">
+                        <div class="section-header">
+                            <h3>Months</h3>
+                            <button type="button" class="select-all" data-target="months">
+                                <i class="calendar-icon">📅</i>
+                            </button>
+                        </div>
+                        <div class="months-grid" id="months-grid">
+                            <button type="button" class="month-btn" data-month="1">ENE</button>
+                            <button type="button" class="month-btn" data-month="2">FEB</button>
+                            <button type="button" class="month-btn" data-month="3">MAR</button>
+                            <button type="button" class="month-btn" data-month="4">ABR</button>
+                            <button type="button" class="month-btn" data-month="5">MAY</button>
+                            <button type="button" class="month-btn" data-month="6">JUN</button>
+                            <button type="button" class="month-btn" data-month="7">JUL</button>
+                            <button type="button" class="month-btn" data-month="8">AGO</button>
+                            <button type="button" class="month-btn" data-month="9">SEP</button>
+                            <button type="button" class="month-btn" data-month="10">OCT</button>
+                            <button type="button" class="month-btn" data-month="11">NOV</button>
+                            <button type="button" class="month-btn" data-month="12">DIC</button>
+                        </div>
+                    </div>
+
+                    <div class="selector-section">
+                        <div class="section-header">
+                            <h3>Days of the Week</h3>
+                            <button type="button" class="select-all" data-target="weekdays">
+                                <i class="calendar-icon">📅</i>
+                            </button>
+                        </div>
+                        <div class="weekdays-grid" id="weekdays-grid">
+                            <button type="button" class="weekday-btn" data-day="1">LUN</button>
+                            <button type="button" class="weekday-btn" data-day="2">MAR</button>
+                            <button type="button" class="weekday-btn" data-day="3">MIE</button>
+                            <button type="button" class="weekday-btn" data-day="4">JUE</button>
+                            <button type="button" class="weekday-btn" data-day="5">VIE</button>
+                            <button type="button" class="weekday-btn" data-day="6">SAB</button>
+                            <button type="button" class="weekday-btn" data-day="0">DOM</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Time Entry Mode:</label>
+                <div class="mode-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="timeMode" value="manual" checked>
+                        Manual Time Ranges
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="timeMode" value="auto">
+                        Auto-Generate Times
+                    </label>
+                </div>
+            </div>
+
+            <div id="manual-mode" class="time-mode-section">
+                <div class="input-group">
+                    <label>Time Ranges:</label>
+                    <div id="time-ranges" class="time-ranges">
+                        <div class="time-range">
+                            <input type="time" class="range-time-in" placeholder="Check-in">
+                            <span>to</span>
+                            <input type="time" class="range-time-out" placeholder="Check-out">
+                            <button type="button" class="remove-range">&times;</button>
+                        </div>
+                    </div>
+                    <button type="button" id="add-time-range" class="button secondary">Add Time Range</button>
+                </div>
+            </div>
+
+            <div id="auto-mode" class="time-mode-section" style="display: none;">
+                <div class="input-group">
+                    <label>Work Hours per Day:</label>
+                    <input type="number" id="work-hours" min="1" max="24" step="0.5" value="8" class="number-input">
+                </div>
+
+                <div class="input-group">
+                    <label>Work Start Time:</label>
+                    <input type="time" id="work-start-time" value="09:00" class="time-input">
+                </div>
+
+                <div class="input-group">
+                    <label>Rest Periods:</label>
+                    <div id="rest-periods" class="rest-periods">
+                        <div class="rest-period">
+                            <select class="rest-type select-input">
+                                <option value="lunch">Lunch Break</option>
+                                <option value="coffee">Coffee Break</option>
+                                <option value="other">Other Break</option>
+                            </select>
+                            <div class="rest-duration">
+                                <input type="number" class="rest-minutes number-input" min="5" max="240" value="30">
+                                <span>minutes</span>
+                            </div>
+                            <button type="button" class="remove-rest">&times;</button>
+                        </div>
+                    </div>
+                    <button type="button" id="add-rest-period" class="button secondary">Add Rest Period</button>
+                </div>
+
+                <div class="input-group">
+                    <label>Time Deviation (±5-7 minutes per day):</label>
+                    <div class="info-text">Total work time will vary slightly each day for more realistic entries</div>
+                </div>
+            </div>
+
+            <button id="generate-entries" class="button">Generate Time Entries</button>
+        </div>
+
+        <div id="time-entries" class="time-entries">
+            <!-- Time entries will be dynamically generated here -->
+        </div>
+
+        <div class="preview-section">
+            <h2>Preview</h2>
+            <div class="table-container">
+                <table id="preview-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Check-in DateTime</th>
+                            <th>Check-out DateTime</th>
+                        </tr>
+                    </thead>
+                    <tbody id="preview-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <button id="download-csv" class="button" disabled>Download CSV</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
